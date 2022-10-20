@@ -1,0 +1,10 @@
+.navBackground {
+    background-color: #FFF15B;
+}
+
+.navColorFont{
+    color: black;
+    font-weight:500;
+    font-size: x-large;
+    /*-webkit-text-stroke: 1.5px black;*/
+}
