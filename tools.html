@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mluStatusStyles.css">
+    <style>
+        body{ 
+            max-width: 600px;
+        }
+        p{
+            padding: 5px;
+        }
+    </style>
+    <title>Tools ML</title>
+</head>
+    <body>
+        <!---<button type="button" id="btnCheck">Check Status</button>
+        <button type="button" id="btnCheckCatalog">Check Catalog</button>
+        <button type="button" id="btnRun">Run</button>
+        <br/><br/>
+        <textarea name="mlusFN" id="_mlusFN" cols="30" rows="10"></textarea>
+        <button id="btnIdsFN">Check MLUs FN</button>
+        <br/><br/>
+        <input type="text" id="userId" placeholder="User Id">
+        <button type="button" id="btnGETactivesML" >GET Active MLU / Meli</button>--->
+        <input type="text" name="Usertoken" id="_token" placeholder="Token">
+        <input type="text" name="user" id="_userId" placeholder="User ID">
+        <input type="text" name="CategoyId" id="_categoryId" placeholder="Category ID">
+        <br><br>    
+        <details>
+            <summary>
+                Buscar en Mercado Libre
+            </summary>
+            <br>
+            <button type="text" name="buscarEnMeli" id="_searchFromMeli">Listar publicaciones de Mercado Libre</button>
+            <br><br>
+            <button type="text" name="BuscarSoloActivos" id="_searchFromMeliMoreMil">Listar publicaciones de Mercado Libre +1000 items</button>
+            <br><br>
+            <button type="text" name="buscarEnMeliPorCategoria" id="_searchFromMeliByCategory">Listar publicaciones de Mercado Libre por Categoria</button>
+            <br><br>
+        </details>    
+        <br>
+        <details>
+            <summary>
+                Check Duplicadas
+            </summary>
+            <br>
+            <textarea name="mlusFN" id="_mlusFN" cols="30" rows="10" placeholder="MLUS FEENICIO"></textarea>
+            <br>
+            <button type="text" name="CheckDuplicated" id="_checkDuplicated">Check Duplicadas</button>
+            <button type="button" name="CheckStatusDuplicadas" id="_checkStatusDuplicadas">Check Status Duplicated</button>
+            <button type="button" name="PausarDuplicadas" id="_pausarDuplicadas">Pausar Duplicadas</button>
+        </details>
+        <br>
+        <details>
+            <summary>
+                Atrubitos / Categorias
+            </summary>
+            <textarea name="" id="_categorysAtttibuttes" cols="30" rows="10" placeholder="Categorias"></textarea>
+            <br>
+            <button type="button" name="" id="_checkAllAttributesForCategory">Listar Atributos</button>
+            <button type="button" name="" id="_checkRequiredAttributesForCategory">Listar Atributos obligatorios</button>
+            <button type="button" name="" id="_printAttributes">Imprimir Atributos</button>
+        </details>
+        <br><br>
+        <label for="_response" style="font-size: 2rem; margin-right: 30px;" >Response</label>
+        <label for="">Total: <span id="MLUStotales"></span></label>
+        <br><br>
+        <div id="_controlers" style="display: none">
+            <button type="text" name="checkStatus" id="_checkStatus">Check Status</button>
+            <select name="filter" id="_statusFilter">
+                <option value="all">Todo</option>
+                <option value="active">Active</option>
+                <option value="paused">Paused</option>
+                <option value="clodes">Closed</option>
+                <option value="under_review">Under_review</option>
+            </select>
+            <button type="text" name="FiltroA" id="_filterByStatus">Filtrar</button>
+            <button type="text" name="copiarMLUs" id="_copyMLUS">Copiar MLUs</button>
+        </div>
+        <br><br>
+        <div id="_response" style="border-color: black; border-style: solid; padding: 20px;">
+            
+        </div>
+        <script src="searchItemsFromMeli.js"></script>
+      </body>
+    </body>
+</html>
