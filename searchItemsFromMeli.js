@@ -133,7 +133,7 @@ async function checkStatus(mlu, tope, pos, token) {
         }
         let res = await fetch("https://api.mercadolibre.com/items/" + mlu, body)
         let data = await res.json()
-        console.log(mlu + " - " + data["status"]);
+        console.log(mlu + " - " + data["status"] + " - " + data["official_store_id"]);
         document.querySelector("#" + data["id"]).setAttribute("class", data["status"])
     }
     return await checkStatus(MLUSmeli[pos+1], tope, pos+1, token);
