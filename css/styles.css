@@ -8,3 +8,7 @@
     font-size: x-large;
     /*-webkit-text-stroke: 1.5px black;*/
 }
+
+.client:hover{
+    cursor: pointer;
+}

@@ -1,5 +1,6 @@
 let UserAccessToken = document.querySelector("#_token")
 let UserId = document.querySelector("#_userId")
+let OfficialStoreID = document.querySelector("#_oficialStoreId")
 let CategoryId = document.querySelector("#_categoryId")
 let DivResponse = document.querySelector("#_response")
 let MLUSmeli = []
@@ -84,6 +85,49 @@ async function listItemsMoreMil(userId, token, scroll = '') {
       return;
     }
     return await listItemsMoreMil(userId, token, resultScroll)
+}
+
+async function listItemsToOfficialStoreId(userId, token, officialStoreId, scroll = '') {
+    let body = {}
+    let resultScroll = scroll
+    let call = true
+    console.log(resultScroll)
+    if(token != ''){
+        body = {
+            "method": 'GET',
+            "headers": {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              "Authorization": "Bearer " + token
+            }
+        }
+        let URLFetch = "https://api.mercadolibre.com/users/"+ userId
+        URLFetch += "/items/search?search_type=scan&limit=100&official_store_id="+ officialStoreId
+        URLFetch += "&scroll_id="+ scroll
+        let res = await fetch(URLFetch, body)
+        let data = await res.json()
+        let lista = data["results"]
+        resultScroll = data["scroll_id"]
+        if (lista === undefined || lista.length === 0) {    
+          document.querySelector("#MLUStotales").innerHTML = MLUSmeli.length
+          document.querySelector("#_controlers").setAttribute("style", "display: block;")
+          return;
+        }
+        lista.forEach(element => {
+            DivResponse.innerHTML += "<p id="+ element +">" + element + "</p>"
+            MLUSmeli.push(element);
+        });
+        call = data["paging"]["limit"] >= data["paging"]["total"] ? false : true
+    }else{
+      alert("No token");
+      return;
+    }
+    if(!call){ 
+        document.querySelector("#MLUStotales").innerHTML = MLUSmeli.length
+        document.querySelector("#_controlers").setAttribute("style", "display: block;")
+        return 
+    }
+    return await listItemsToOfficialStoreId(userId, token, officialStoreId,resultScroll)
 }
 
 async function listByCategory(offset, userId, category, token) {
@@ -468,4 +512,12 @@ document.querySelector("#_pausarDuplicadas").addEventListener("click", (e) => {
     if(MLUSDuplicados.length > 0){
         pausedDuplicated(MLUSDuplicados[0], MLUSDuplicados.length, 0)
     }
+})
+
+document.querySelector("#_searchFromMeliByOfficialStoreId").addEventListener("click", (e)=>{
+    e.preventDefault()
+    if(OfficialStoreID.value == ''){
+        return
+    }
+    listItemsToOfficialStoreId(UserId.value, UserAccessToken.value, OfficialStoreID.value)
 })
