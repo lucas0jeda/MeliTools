@@ -58,6 +58,14 @@
         </details>
         <br>
         <details>
+            <summary>Check catalog</summary>
+            <br>
+            <textarea name="mlusFN" id="_mlusDuplicadas" cols="30" rows="10" placeholder="MLUS DUPLICADAS"></textarea>
+            <br>
+            <button type="text" name="CheckCatalogo" id="_checkCatalog">Check catalog</button>
+        </details>
+        <br>
+        <details>
             <summary>
                 Atrubitos / Categorias
             </summary>
@@ -77,11 +85,20 @@
                 <option value="all">Todo</option>
                 <option value="active">Active</option>
                 <option value="paused">Paused</option>
-                <option value="clodes">Closed</option>
+                <option value="closed">Closed</option>                
                 <option value="under_review">Under_review</option>
             </select>
             <button type="text" name="FiltroA" id="_filterByStatus">Filtrar</button>
             <button type="text" name="copiarMLUs" id="_copyMLUS">Copiar MLUs</button>
+        </div>
+        <br>
+        <div id="_controlersByCatalog" style="display: none">
+            <select name="filter" id="_statusFilterCatalog">
+                <option value="all">Todo</option>            
+                <option value="catalog">Catalog</option>
+                <option value="no-catalog">No Catalog</option>
+            </select>
+            <button type="text" name="Filtro" id="_filterByCatalog">Filtrar</button>
         </div>
         <br><br>
         <div id="_response" style="border-color: black; border-style: solid; padding: 20px;">

@@ -307,6 +307,31 @@ function checkDuplicated(mlusMeli, mlusFenicio){
     }
 }
 
+async function checkCatalog(mlu, tope, pos, token) {
+    if(pos >= tope){
+        return;
+    }
+    let body = {}
+    if(token != ''){
+        body = {
+            "method": 'GET',
+            "headers": {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              "Authorization": "Bearer " + token
+            }
+        }
+        let res = await fetch("https://api.mercadolibre.com/items/" + mlu, body)
+        let data = await res.json()
+        console.log(mlu + " - " + data["item_relations"].length);
+        if(data["item_relations"].length > 0){
+            document.querySelector("#" + data["id"]).setAttribute("class", "catalog")
+        }else{
+            document.querySelector("#" + data["id"]).setAttribute("class", "no-catalog")
+        }
+    }
+}
+
 async function pausedDuplicated(mlu, tope, pos) {
     if(tope == pos){
       alert("Fin pausado");
@@ -351,6 +376,23 @@ function filterByStatus(){
             }
         }else{
             MLUSmeliFilter.length = 0;
+            element.setAttribute('style', "display: block;")
+        }  
+    })
+}
+
+function filterByCatalog(){
+    let allElements = document.querySelectorAll("p")
+    let status = document.querySelector("#_statusFilterCatalog").value
+    allElements.forEach(element => {
+        if(status != 'all'){
+            if(element.className == status && element.className != ''){                
+                element.setAttribute("style", "display: block;")
+            }else if(element.className != status && element.className != ''){
+                element.setAttribute("style", "display: none;")
+            }
+        }else{
+            MLUSDuplicados.length = 0;
             element.setAttribute('style', "display: block;")
         }  
     })
@@ -404,6 +446,15 @@ document.querySelector("#_filterByStatus").addEventListener("click", (e) => {
     e.preventDefault()
     if(MLUSmeli.length > 0){
         filterByStatus()
+    }else{
+        alert("MLUs no cargados")
+    }
+})
+
+document.querySelector("#_filterByCatalog").addEventListener("click", (e) => {
+    e.preventDefault()
+    if(MLUSDuplicados.length > 0){
+        filterByCatalog()
     }else{
         alert("MLUs no cargados")
     }
@@ -520,4 +571,22 @@ document.querySelector("#_searchFromMeliByOfficialStoreId").addEventListener("cl
         return
     }
     listItemsToOfficialStoreId(UserId.value, UserAccessToken.value, OfficialStoreID.value)
+})
+
+document.querySelector("#_checkCatalog").addEventListener("click", (e)=>{
+    e.preventDefault()
+    let txtMLUsDuplicadas = document.querySelector("#_mlusDuplicadas").value
+    MLUSDuplicados = txtMLUsDuplicadas.split("\n")
+    console.log("==============================")
+    console.log(MLUSDuplicados)
+    console.log("==============================")
+    if(MLUSDuplicados.length > 0){
+        MLUSDuplicados.forEach((mlu, index) => {
+            DivResponse.innerHTML += '<p id="'+ mlu +'">'+ mlu +'</p>'
+            checkCatalog(mlu, MLUSDuplicados.length, index, UserAccessToken.value)
+           
+        })
+        document.querySelector("#MLUStotales").innerHTML = MLUSDuplicados.length
+        document.querySelector("#_controlersByCatalog").setAttribute("style", "display: block;")
+    }
 })

@@ -1,5 +1,6 @@
 let UserAccessToken = document.querySelector("#_token")
 let UserId = document.querySelector("#_userId")
+let OfficialStoreID = document.querySelector("#_oficialStoreId")
 let CategoryId = document.querySelector("#_categoryId")
 let DivResponse = document.querySelector("#_response")
 let MLUSmeli = []
@@ -86,6 +87,49 @@ async function listItemsMoreMil(userId, token, scroll = '') {
     return await listItemsMoreMil(userId, token, resultScroll)
 }
 
+async function listItemsToOfficialStoreId(userId, token, officialStoreId, scroll = '') {
+    let body = {}
+    let resultScroll = scroll
+    let call = true
+    console.log(resultScroll)
+    if(token != ''){
+        body = {
+            "method": 'GET',
+            "headers": {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              "Authorization": "Bearer " + token
+            }
+        }
+        let URLFetch = "https://api.mercadolibre.com/users/"+ userId
+        URLFetch += "/items/search?search_type=scan&limit=100&official_store_id="+ officialStoreId
+        URLFetch += "&scroll_id="+ scroll
+        let res = await fetch(URLFetch, body)
+        let data = await res.json()
+        let lista = data["results"]
+        resultScroll = data["scroll_id"]
+        if (lista === undefined || lista.length === 0) {    
+          document.querySelector("#MLUStotales").innerHTML = MLUSmeli.length
+          document.querySelector("#_controlers").setAttribute("style", "display: block;")
+          return;
+        }
+        lista.forEach(element => {
+            DivResponse.innerHTML += "<p id="+ element +">" + element + "</p>"
+            MLUSmeli.push(element);
+        });
+        call = data["paging"]["limit"] >= data["paging"]["total"] ? false : true
+    }else{
+      alert("No token");
+      return;
+    }
+    if(!call){ 
+        document.querySelector("#MLUStotales").innerHTML = MLUSmeli.length
+        document.querySelector("#_controlers").setAttribute("style", "display: block;")
+        return 
+    }
+    return await listItemsToOfficialStoreId(userId, token, officialStoreId,resultScroll)
+}
+
 async function listByCategory(offset, userId, category, token) {
     let body = {}
     if(token != ''){
@@ -133,7 +177,7 @@ async function checkStatus(mlu, tope, pos, token) {
         }
         let res = await fetch("https://api.mercadolibre.com/items/" + mlu, body)
         let data = await res.json()
-        console.log(mlu + " - " + data["status"] + " - " + data["official_store_id"]);
+        console.log(mlu + " - " + data["status"] + " - Tienda oficial:" + data["official_store_id"]);
         document.querySelector("#" + data["id"]).setAttribute("class", data["status"])
     }
     return await checkStatus(MLUSmeli[pos+1], tope, pos+1, token);
@@ -177,39 +221,11 @@ async function checkRequiredAtributtes(mlusCategory, tope, pos, token) {
         }
         let res = await fetch("https://api.mercadolibre.com/categories/"+ mlusCategory[pos] +"/attributes", body)
         let data = await res.json()
-        DivResponse.innerHTML += "<p style='color: white; background-color: #196F3D;'>" + mlusCategory[pos] + "</p>"
+        DivResponse.innerHTML += "<p>" + mlusCategory[pos] + "</p>"
         DivResponse.innerHTML += "<ul>"
         data.forEach(element => {     
             if(element["hierarchy"] == "PARENT_PK" || element["tags"]["required"] || element["tags"]["catalog_required"]){
-                switch(element["value_type"]){
-                    case "string":
-                        DivResponse.innerHTML += "<li>" + element["id"] + " - " + element["name"] +" - Texto</li><hr>" 
-                        break;
-                    case "list":
-                        DivResponse.innerHTML += "<li>" + element["id"] + " - " + element["name"] + " - Lista"
-                        DivResponse.innerHTML += "<ul>"
-                        element["values"].forEach(val => {
-                            DivResponse.innerHTML  += "<li>"+ val["name"] +"</li>"
-                        })
-                        DivResponse.innerHTML += "</ul>"
-                        DivResponse.innerHTML  += "</li><hr>"
-                        break;
-                    case "number_unit":
-                        DivResponse.innerHTML += "<li>" + element["id"] + " - " + element["name"] + " - Numero + Unidad de medida"
-                        DivResponse.innerHTML  += "<ul>"
-                        element["allowed_units"].forEach(unit => {
-                            DivResponse.innerHTML  += "<li>"+ unit["name"] +"</li>"
-                        }) 
-                        DivResponse.innerHTML  += "</ul>"
-                        DivResponse.innerHTML += "</li><hr>" 
-                        break;
-                    case "number":
-                        DivResponse.innerHTML += "<li>" + element["id"] + " - " + element["name"] +" - Solo numeros</li><hr>" 
-                        break;
-                    case "boolean":
-                        DivResponse.innerHTML += "<li>" + element["id"] + " - " + element["name"] +" - Si o No</li><hr>" 
-                        break;
-                } 
+                DivResponse.innerHTML += "<li>" + element["id"] + " - " + element["name"] + "</li>"     
             }   
         }) 
         DivResponse.innerHTML += "</ul>"
@@ -291,7 +307,32 @@ function checkDuplicated(mlusMeli, mlusFenicio){
     }
 }
 
-async function pausedDuplicated(mlu, tope, pos, token) {
+async function checkCatalog(mlu, tope, pos, token) {
+    if(pos >= tope){
+        return;
+    }
+    let body = {}
+    if(token != ''){
+        body = {
+            "method": 'GET',
+            "headers": {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              "Authorization": "Bearer " + token
+            }
+        }
+        let res = await fetch("https://api.mercadolibre.com/items/" + mlu, body)
+        let data = await res.json()
+        console.log(mlu + " - " + data["item_relations"].length);
+        if(data["item_relations"].length > 0){
+            document.querySelector("#" + data["id"]).setAttribute("class", "catalog")
+        }else{
+            document.querySelector("#" + data["id"]).setAttribute("class", "no-catalog")
+        }
+    }
+}
+
+async function pausedDuplicated(mlu, tope, pos) {
     if(tope == pos){
       alert("Fin pausado");
       return;
@@ -300,20 +341,17 @@ async function pausedDuplicated(mlu, tope, pos, token) {
       alert("Fin pausado - limite de request alcanzado (1500)");
       return;
     }
-    let PUTpaused = {}
+    let body = {}
     if(token != ''){
-        PUTpaused = {  
-            method: 'PUT',
-            headers: {
-              'Accept': '*/*',
+        body = {
+            "method": 'PUT',
+            "headers": {
+              'Accept': 'application/json',
               'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + token 
-            },
-            body: JSON.stringify({
-                "status": "paused"
-            })
+              "Authorization": "Bearer " + token
+            }
         }
-        let res = await fetch("https://api.mercadolibre.com/items/" + mlu, PUTpaused)
+        let res = await fetch("https://api.mercadolibre.com/items/" + mlu, body)
         let data = await res.json()
         if(pos == 1){
             console.log(data);
@@ -338,6 +376,23 @@ function filterByStatus(){
             }
         }else{
             MLUSmeliFilter.length = 0;
+            element.setAttribute('style', "display: block;")
+        }  
+    })
+}
+
+function filterByCatalog(){
+    let allElements = document.querySelectorAll("p")
+    let status = document.querySelector("#_statusFilterCatalog").value
+    allElements.forEach(element => {
+        if(status != 'all'){
+            if(element.className == status && element.className != ''){                
+                element.setAttribute("style", "display: block;")
+            }else if(element.className != status && element.className != ''){
+                element.setAttribute("style", "display: none;")
+            }
+        }else{
+            MLUSDuplicados.length = 0;
             element.setAttribute('style', "display: block;")
         }  
     })
@@ -391,6 +446,15 @@ document.querySelector("#_filterByStatus").addEventListener("click", (e) => {
     e.preventDefault()
     if(MLUSmeli.length > 0){
         filterByStatus()
+    }else{
+        alert("MLUs no cargados")
+    }
+})
+
+document.querySelector("#_filterByCatalog").addEventListener("click", (e) => {
+    e.preventDefault()
+    if(MLUSDuplicados.length > 0){
+        filterByCatalog()
     }else{
         alert("MLUs no cargados")
     }
@@ -497,7 +561,32 @@ document.querySelector("#_checkDuplicated").addEventListener("click", (e)=>{
 document.querySelector("#_pausarDuplicadas").addEventListener("click", (e) => {
     e.preventDefault()
     if(MLUSDuplicados.length > 0){
-        pausedDuplicated(MLUSDuplicados[0], MLUSDuplicados.length, 0, UserAccessToken.value)
+        pausedDuplicated(MLUSDuplicados[0], MLUSDuplicados.length, 0)
     }
 })
 
+document.querySelector("#_searchFromMeliByOfficialStoreId").addEventListener("click", (e)=>{
+    e.preventDefault()
+    if(OfficialStoreID.value == ''){
+        return
+    }
+    listItemsToOfficialStoreId(UserId.value, UserAccessToken.value, OfficialStoreID.value)
+})
+
+document.querySelector("#_checkCatalog").addEventListener("click", (e)=>{
+    e.preventDefault()
+    let txtMLUsDuplicadas = document.querySelector("#_mlusDuplicadas").value
+    MLUSDuplicados = txtMLUsDuplicadas.split("\n")
+    console.log("==============================")
+    console.log(MLUSDuplicados)
+    console.log("==============================")
+    if(MLUSDuplicados.length > 0){
+        MLUSDuplicados.forEach((mlu, index) => {
+            DivResponse.innerHTML += '<p id="'+ mlu +'">'+ mlu +'</p>'
+            checkCatalog(mlu, MLUSDuplicados.length, index, UserAccessToken.value)
+           
+        })
+        document.querySelector("#MLUStotales").innerHTML = MLUSDuplicados.length
+        document.querySelector("#_controlersByCatalog").setAttribute("style", "display: block;")
+    }
+})

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar navBackground">
+        <div class="container-fluid">
+          <a class="navbar-brand navColorFont" href="#">
+            MeliTOOLS
+          </a>
+        </div>
+    </nav>
+    <br><br>
+    <div class="container">
+        <label id="_userAccessToken">*</label>
+        <br><br>
+        <label id="_userId">*</label>
+        <br><br>
+        <input type="button" class="btn btn-secondary" value="Refrescar Token">
+    </div>
+    <br><br>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-md-6">
+                <div class="accordion" id="accordionFlushExample">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                          Buscar en Mercado Libre
+                        </button>
+                      </h2>
+                      <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <button type="text" name="buscarEnMeli" id="_buscarEnMeli" class="btn btn-secondary">_searchFromMeli</button>
+                            <br><br>
+                            <button type="text" name="BuscarSoloActivos" id="_buscarEnMeliMasDeMil" class="btn btn-secondary"> _searchFromMeliMoreMil</button>
+                            <br><br>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Categoria MercadoLibre" aria-label="Categoria MercadoLibre" aria-describedby="_buscarEnMeliPorCategoria">
+                                <button class="btn btn-secondary" type="button" id="_buscarEnMeliPorCategoria" name="buscarEnMeliPorCategoria">_searchFromMeliByCategory</button>
+                            </div>
+                            <button type="text" name="buscarEnMeliPorCategoria" id="_buscarEnMeliPorTiendaOficial" class="btn btn-secondary">_searchFromMeliByOfficialStoreId</button>
+                            <br><br>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="flush-headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                            Revisar Duplicadas
+                        </button>
+                      </h2>
+                      <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body"></div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="flush-headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                            Verificar Catalogo
+                        </button>
+                      </h2>
+                      <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body"></div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingThree">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                            Atrubitos / Categorias
+                          </button>
+                        </h2>
+                        <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                          <div class="accordion-body"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-6">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body" id="_divReponse">
+                      <h5 class="card-title">Respuesta</h5>
+                      <br>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <script src="./js/searchItemsFromMeli.js"></script>
+</body>
+</html>
