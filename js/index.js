@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 const cargarTablaDeClientes = () => {
-    let result = fetch("http://localhost:8090/clients/")
+    let result = fetch("https://server-tools-meli.herokuapp.com/clients/")
       .then(response => response.json())
       .then((result) => {
         result["clients"].forEach(element => {
