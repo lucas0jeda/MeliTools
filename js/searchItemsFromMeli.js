@@ -1,5 +1,5 @@
-let UserAccessToken = localStorage.getItem("userAccessToken")
-let UserId = localStorage.getItem("userId")
+let cliente = JSON.parse(localStorage.getItem("cliente"))
+let privateInfo = JSON.parse(cliente.private_info)
 let DivResponse = document.querySelector("#_divReponse")
 let MLUsRemotosCliente = []
 
@@ -17,8 +17,8 @@ const bodyRequestGET = (token) => {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.querySelector("#_userAccessToken").innerHTML = localStorage.getItem("userAccessToken")
-    document.querySelector("#_userId").innerHTML = localStorage.getItem("userId")
+    document.querySelector("#_userAccessToken").innerHTML = privateInfo.access_token
+    document.querySelector("#_userId").innerHTML = privateInfo.user_id
     DivResponse = document.querySelector("#_divReponse")  
 });
 
@@ -40,9 +40,17 @@ async function listPublicaciones(offset, userId, token) {
 
 document.querySelector("#_buscarEnMeli").addEventListener("click", (e) => {
     e.preventDefault()
-    if(UserId == '*' || UserAccessToken == '*'){
+    if(privateInfo.access_token == undefined || privateInfo.user_id == undefined){
         return
     }
-    listPublicaciones(0, UserId, UserAccessToken)
+    listPublicaciones(0, privateInfo.user_id, privateInfo.access_token)
     console.log(MLUsRemotosCliente);
+})
+
+document.querySelector("#_refrestoken").addEventListener("click", async (e) => {
+    e.preventDefault()
+    console.log(localStorage.getItem("userId"))
+    console.log(localStorage.getItem("userAccessToken"))
+    console.log(localStorage.getItem("codigoClienteFenicio"))
+    alert("Token actualizado correctamente")
 })
